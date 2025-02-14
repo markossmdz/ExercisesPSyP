@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: testdb
+    volumes:
+      - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock # Unix socket
+
+
+  backend:
+    build: backend
+    container_name: backend
+    depends_on:
+      - db
+    ports:
+      - "4000:4000" # Exposing TCP socket
+
+  web:
+    build: nginx
+    container_name: web
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
